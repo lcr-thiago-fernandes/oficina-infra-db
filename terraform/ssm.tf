@@ -7,3 +7,10 @@ resource "aws_ssm_parameter" "db_security_group_id" {
   type        = "String"
   value       = aws_security_group.rds.id
 }
+
+resource "aws_ssm_parameter" "db_endpoint" {
+  name        = "/${var.project}/db/endpoint"
+  description = "Hostname do RDS, SEM porta (address, nao endpoint). Vira Host= na connection string do oficina-app e Banco__Host na oficina-auth-api."
+  type        = "String"
+  value       = aws_db_instance.oficina.address
+}
