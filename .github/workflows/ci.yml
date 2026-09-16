@@ -13,8 +13,8 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
       - name: fmt
         run: terraform -chdir=terraform fmt -check -recursive
       # -backend=false: valida sintaxe, tipos e providers sem S3 nem credenciais. O plan e o CD.
@@ -26,7 +26,7 @@ jobs:
   scripts:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: shellcheck
         run: shellcheck scripts/*.sh
       - name: bash -n
@@ -38,6 +38,6 @@ jobs:
     # texto puro, usuario/banco/porta fixos. Um validate verde nao pega nada disso.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: verificar-contratos
         run: ./scripts/verificar-contratos.sh
