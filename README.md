@@ -30,13 +30,16 @@ flowchart LR
     end
     P1 & P2 & P3 -->|data sources| TF["Terraform deste repo"]
     subgraph VPC["VPC · subnets privadas"]
-        TF --> SGRP["DB subnet group<br/>oficina-db-subnet-group"]
-        TF --> SG["SG oficina-rds-sg<br/>sem regras inline"]
-        TF --> PG["Parameter group postgres16<br/>log_min_duration_statement = 500"]
+        SGRP["DB subnet group<br/>oficina-db-subnet-group"]
+        SG["SG oficina-rds-sg<br/>sem regras inline"]
+        PG["Parameter group postgres16<br/>log_min_duration_statement = 500"]
         SGRP & SG & PG --> RDS[("RDS oficina-postgres<br/>PostgreSQL 16 · db.t3.micro<br/>20 GB gp3 · criptografado · single-AZ")]
         NODES["sg-nodes · EKS<br/>pods do oficina-app"] -->|"5432 · regra daqui"| SG
         LAMBDA["sg-lambda-auth<br/>oficina-auth-api"] -->|"5432 · regra do repo lambda-auth"| SG
     end
+    TF --> SGRP
+    TF --> SG
+    TF --> PG
     TF -->|random_password| SEC[("Secrets Manager<br/>oficina/db_password · texto puro")]
     TF -->|"address, sem porta"| S1["/oficina/db/endpoint"]
     TF --> S2["/oficina/db/security_group_id"]
@@ -121,6 +124,8 @@ SENHA=$(aws secretsmanager get-secret-value --secret-id oficina/db_password --qu
 kubectl -n oficina-prd run psql --rm -it --image=postgres:16 --env="PGPASSWORD=$SENHA" -- \
   psql -h "$HOST" -p 5432 -U oficina_admin -d oficina
 ```
+Comando ad-hoc para demonstração: a senha entra no spec do pod (visível a quem tem `get pod` no namespace) e no histórico do shell; o `--rm` apaga o pod ao sair.
+
 Queries acima de 500 ms: CloudWatch Logs, log group `/aws/rds/instance/oficina-postgres/postgresql`.
 
 ## Decisões e limitações registradas
