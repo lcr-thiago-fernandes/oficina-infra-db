@@ -86,7 +86,7 @@ fi
 
 # 5. Nomes fixados pelo oficina-app (connection string do CD) e pelo oficina-lambda-auth.
 checar_default() { # variavel, valor esperado (regex), rotulo
-  if grep -n -A4 "variable \"$1\"" "$TF_DIR/variables.tf" | grep -E "default[[:space:]]*=[[:space:]]*$2" >/dev/null; then
+  if grep -n -A8 "variable \"$1\"" "$TF_DIR/variables.tf" | grep -E "default[[:space:]]*=[[:space:]]*$2" >/dev/null; then
     ok "$3"
   else
     erro "$3 — esperado default $2 em variable \"$1\"."

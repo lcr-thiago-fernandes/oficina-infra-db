@@ -1,7 +1,7 @@
 # DB subnet group nas subnets privadas do oficina-infra-k8s (RDS nunca em subnet publica).
 resource "aws_db_subnet_group" "oficina" {
   name        = local.nome_subnet_group
-  description = "Subnets privadas da VPC da oficina (lidas de /oficina/network/private_subnet_ids)"
+  description = "Subnets privadas da VPC da oficina (lidas de /${var.project}/network/private_subnet_ids)"
   subnet_ids  = local.private_subnet_ids
 
   tags = { Name = local.nome_subnet_group }

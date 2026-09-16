@@ -10,6 +10,11 @@ resource "aws_db_parameter_group" "postgres" {
     value        = tostring(var.db_log_min_duration_statement_ms)
     apply_method = "immediate"
   }
+
+  # name e family mudam juntos ao trocar a major (ex.: 17): cria o novo grupo, migra a instancia e so entao apaga o antigo. Sem isto o destroy vem primeiro e o RDS recusa (InvalidDBParameterGroupState).
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 # Log group com o nome que o RDS usa ao exportar `postgresql`, criado ANTES da instancia para
