@@ -19,6 +19,20 @@ recursos separados, parameter group com `log_min_duration_statement = 500`, Perf
 Contratos: [`docs/contratos.md`](docs/contratos.md) e
 [`oficina-app/docs/contratos-entre-repositorios.md`](https://github.com/lcr-thiago-fernandes/oficina-app/blob/develop/docs/contratos-entre-repositorios.md).
 
+## Documentação arquitetural
+
+A documentação arquitetural da Fase 3 é centralizada no `oficina-app`:
+
+| O quê | Onde |
+|---|---|
+| Design arquitetural | [fase3-design-arquitetural.md](https://github.com/lcr-thiago-fernandes/oficina-app/blob/develop/docs/arquitetura/fase3-design-arquitetural.md) |
+| RFCs | [docs/rfc](https://github.com/lcr-thiago-fernandes/oficina-app/blob/develop/docs/rfc/README.md) |
+| ADRs | [docs/arquitetura](https://github.com/lcr-thiago-fernandes/oficina-app/blob/develop/docs/arquitetura/README.md) |
+| Diagrama de componentes | [componentes.md](https://github.com/lcr-thiago-fernandes/oficina-app/blob/develop/docs/arquitetura/diagramas/componentes.md) |
+
+As decisões deste repositório estão registradas em `## Decisões e limitações registradas`, abaixo, e em
+[docs/contratos.md](docs/contratos.md).
+
 ## Arquitetura
 
 ```mermaid
@@ -130,9 +144,9 @@ Queries acima de 500 ms: CloudWatch Logs, log group `/aws/rds/instance/oficina-p
 
 ## Decisões e limitações registradas
 
-1. **Descoberta pelo SSM, não por tag** (D1): o `oficina-infra-k8s` publica `/oficina/network/*`; o SG dos nós do módulo EKS não carrega a tag que o design supunha.
-2. **Senha por `random_password`, alfanumérica, sem GitHub Secret** (D2): o CD do `oficina-app` concatena `Password=` sem aspas; `manage_master_user_password` gravaria JSON em outro nome.
-3. **SG sem regras inline; egress liberada** (D3): SG compartilhado com o `lambda-auth`.
+1. **Descoberta pelo SSM, não por tag** (D1): o `oficina-infra-k8s` publica `/oficina/network/*`; o SG dos nós do módulo EKS não carrega a tag que o design supunha. Ver [RFC-004](https://github.com/lcr-thiago-fernandes/oficina-app/blob/develop/docs/rfc/RFC-004-topologia-quatro-repositorios.md).
+2. **Senha por `random_password`, alfanumérica, sem GitHub Secret** (D2): o CD do `oficina-app` concatena `Password=` sem aspas; `manage_master_user_password` gravaria JSON em outro nome. Ver [RFC-002](https://github.com/lcr-thiago-fernandes/oficina-app/blob/develop/docs/rfc/RFC-002-banco-rds-postgresql.md).
+3. **SG sem regras inline; egress liberada** (D3): SG compartilhado com o `lambda-auth`. Ver [RFC-002](https://github.com/lcr-thiago-fernandes/oficina-app/blob/develop/docs/rfc/RFC-002-banco-rds-postgresql.md).
 4. **`insecure_value` nos data sources SSM** (D4): identificadores não são segredos; `value` esconderia o plan.
 5. **Logs `postgresql` no CloudWatch com log group pré-criado, 14 dias** (D5): dá utilidade ao `log_min_duration_statement`; acréscimo ao design, removível.
 6. **`engine_version = "16"` + `auto_minor_version_upgrade`** (D6).
