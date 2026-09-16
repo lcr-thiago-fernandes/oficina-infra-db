@@ -1,0 +1,17 @@
+version: 2
+updates:
+  - package-ecosystem: "terraform"
+    directory: "/terraform"
+    schedule:
+      interval: "weekly"
+    labels: ["dependencies", "terraform"]
+    # Majors (aws 6) mudam sintaxe e sao decisao consciente (D12); os outros repos estao em aws 5.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels: ["dependencies", "github-actions"]
